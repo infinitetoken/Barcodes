@@ -3,6 +3,33 @@ require 'barcodes/symbology/standard'
 module Barcodes
   module Symbology
     class Code93 < Standard
+      def self.charset
+        [
+          "0","1","2","3","4","5","6","7","8","9",
+          "A","B","C","D","E","F","G","H","I","J",
+          "K","L","M","N","O","P","Q","R","S","T",
+          "U","V","W","X","Y","Z","-","."," ","$",
+          "/","+","%","*","\xFC","\xFD","\xFE","\xFF"
+        ].collect {|c| c.bytes.to_a[0] }
+      end
+      
+      def self.valueset
+        [
+          "100010100","101001000","101000100","101000010",
+          "100101000","100100100","100100010","101010000",
+          "100010010","100001010","110101000","110100100",
+          "110100010","110010100","110010010","110001010",
+          "101101000","101100100","101100010","100110100",
+          "100011010","101011000","101001100","101000110",
+          "100101100","100010110","110110100","110110010",
+          "110101100","110100110","110010110","110011010",
+          "101101100","101100110","100110110","100111010",
+          "100101110","111010100","111010010","111001010",
+          "101101110","101110110","110101110","101011110",
+          "100100110","111011010","111010110","100110010"
+        ]
+      end
+      
       def initialize(args={})
         super(args)
         
@@ -21,29 +48,6 @@ module Barcodes
         end
       end
       
-      def encoded_data
-        if self.valid?
-          encoded_data = ''
-          shifted = false
-          shifted_char = ''
-          self.formatted_data.each_char do |char|
-            if shifted || char == '(' || char == ')'
-              if shifted && char != ')'
-                shifted_char = char
-              elsif char == ')'
-                shifted = false
-                encoded_data += self._encode_character("(#{shifted_char})")
-              else
-                shifted = true
-              end
-            else
-              encoded_data += self._encode_character char
-            end
-          end
-          encoded_data
-        end
-      end
-      
       def checksum
         if self.valid?
           c_value = self._checksum(@data, 20)
@@ -57,32 +61,25 @@ module Barcodes
       def _checksum(data, weight_max)
         sum = 0
         weight = 1
-        shifted = false
-        data.reverse.each_char do |char|
-          if shifted || char == '(' || char == ')'
-            if shifted && char != '('
-              case char
-              when '$'
-                sum += 43
-              when '%'
-                sum += 44
-              when '/'
-                sum += 45
-              when '+'
-                sum += 46
-              end
-            elsif char == ')'
-              shifted = true
-            else
-              shifted = false
+        data.reverse.each_byte do |char|
+          if char == 255 || char == 254 || char == 253 || char == 252
+            case char
+            when 252
+              sum += 43
+            when 253
+              sum += 44
+            when 254
+              sum += 45
+            when 255
+              sum += 46
             end
           else
-            if ('0'..'9').include? char
-              sum += weight * char.to_i
-            elsif ('A'..'Z').include? char
-              sum += ('A'..'Z').to_a.index(char) + 10
+            if ('0'..'9').include? char.chr
+              sum += weight * char.chr.to_i
+            elsif ('A'..'Z').include? char.chr
+              sum += ('A'..'Z').to_a.index(char.chr) + 10
             else
-              case char
+              case char.chr
               when '-'
                 sum += 36
               when '.'
@@ -130,117 +127,14 @@ module Barcodes
           when 42
             return '%'
           when 43
-            return '($)'
+            return "\xFC"
           when 44
-            return '(%)'
+            return "\xFD"
           when 45
-            return '(/)'
+            return "\xFE"
           when 46
-            return '(+)'
+            return "\xFF"
           end
-        end
-      end
-      
-      def _encode_character(character)
-        case character
-        when '0'
-          return "100010100"
-        when '1'
-          return "101001000"
-        when '2'
-          return "101000100"
-        when '3'
-          return "101000010"
-        when '4'
-          return "100101000"
-        when '5'
-          return "100100100"
-        when '6'
-          return "100100010"
-        when '7'
-          return "101010000"
-        when '8'
-          return "100010010"
-        when '9'
-          return "100001010"
-        when 'A'
-          return "110101000"
-        when 'B'
-          return "110100100"
-        when 'C'
-          return "110100010"
-        when 'D'
-          return "110010100"
-        when 'E'
-          return "110010010"
-        when 'F'
-          return "110001010"
-        when 'G'
-          return "101101000"
-        when 'H'
-          return "101100100"
-        when 'I'
-          return "101100010"
-        when 'J'
-          return "100110100"
-        when 'K'
-          return "100011010"
-        when 'L'
-          return "101011000"
-        when 'M'
-          return "101001100"
-        when 'N'
-          return "101000110"
-        when 'O'
-          return "100101100"
-        when 'P'
-          return "100010110"
-        when 'Q'
-          return "110110100"
-        when 'R'
-          return "110110010"
-        when 'S'
-          return "110101100"
-        when 'T'
-          return "110100110"
-        when 'U'
-          return "110010110"
-        when 'V'
-          return "110011010"
-        when 'W'
-          return "101101100"
-        when 'X'
-          return "101100110"
-        when 'Y'
-          return "100110110"
-        when 'Z'
-          return "100111010"
-        when ' '
-          return "111010010"
-        when '-'
-          return "100101110"
-        when '.'
-          return "111010100"
-        when '$'
-          return "111001010"
-        when '/'
-          return "101101110"
-        when '+'
-          return "101110110"
-        when '%'
-          return "110101110"
-        when '($)'
-          return "100100110"
-        when '(/)'
-          return "111010110"
-        when '(+)'
-          return "100110010"
-        when '(%)'
-          return "111011010"
-        when '*'
-          return "101011110"
-        else
-          return nil
         end
       end
     end

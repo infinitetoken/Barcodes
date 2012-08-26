@@ -14,6 +14,16 @@ module Barcodes
       attr_accessor :font_family
       attr_accessor :font_size
       attr_accessor :captioned
+      
+      def self.charset
+        # Should be overridden by subclass to provide charset
+        [].collect {|c| c.bytes.to_a[0] }
+      end
+      
+      def self.valueset
+        # Should be overridden by subclass to provide valueset
+        []
+      end
     
       def initialize(args={})
         @data = '0123456789'
@@ -50,18 +60,18 @@ module Barcodes
     
       def caption_data
         # Can be overridden by subclass to format data string for display
-        @data
+        self.data
       end
     
       def formatted_data
         # Can be overridden by subclass to add additional formatting to data string
-        @data
+        self.data
       end
     
       def encoded_data
         if self.valid?
-          encoded_data = ''
-          self.formatted_data.each_char do |char|
+          encoded_data = ""
+          self.formatted_data.each_byte do |char|
             encoded_data += self._encode_character char
           end
           encoded_data
@@ -74,20 +84,20 @@ module Barcodes
       end
     
       def width
-        (self.encoded_data.length * @bar_width) + (self.quiet_zone_width * 2)
+        (self.encoded_data.length * self.bar_width) + (self.quiet_zone_width * 2)
       end
     
       def height
-        @captioned ? @caption_height + @bar_height : @bar_height
+        self.captioned ? self.caption_height + self.bar_height : self.bar_height
       end
     
       def valid?
-        # Should be overridden in subclass to validate barcode
-        valid = @data.length > 0 ? true : false
+        # Can be overridden in subclass to validate barcode
+        valid = self.data.length > 0 ? true : false
       
-        @data.each_char do |char|
+        self.data.each_byte do |char|
           if self._encode_character(char).nil?
-            valid = false
+            return false
           end
         end
       
@@ -97,8 +107,11 @@ module Barcodes
       protected
     
       def _encode_character(character)
-        # Must be overridden in subclass to encode given character
-        0
+        if self.class.charset.include? character
+          return self.class.valueset.at(self.class.charset.index(character))
+        else
+          return nil
+        end
       end
     end
   end

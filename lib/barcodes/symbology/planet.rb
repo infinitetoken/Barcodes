@@ -3,6 +3,18 @@ require 'barcodes/symbology/base'
 module Barcodes
   module Symbology
     class Planet < Base
+      def self.charset
+        ['0','1','2','3','4','5','6','7','8','9'].collect {|c| c.bytes.to_a[0] }
+      end
+      
+      def self.valueset
+        [
+          '00111','11100','11010','11001',
+          '10110','10101','10011','01110',
+          '01101','01011'
+        ]
+      end
+      
       def formatted_data
         checksum = self.checksum
         unless checksum.nil?
@@ -13,7 +25,7 @@ module Barcodes
       def encoded_data
         if self.valid?
           encoded_data = ''
-          self.formatted_data.each_char do |char|
+          self.formatted_data.each_byte do |char|
             encoded_data += self._encode_character char
           end
           return '1' + encoded_data + '1'
@@ -50,7 +62,7 @@ module Barcodes
       end
       
       def valid?
-        @data.each_char do |char|
+        @data.each_byte do |char|
           if self._encode_character(char).nil?
             return false
           end
@@ -87,35 +99,6 @@ module Barcodes
           end
 
           pdf.restore_graphics_state
-        end
-      end
-      
-      protected
-      
-      def _encode_character(character)
-        case character
-        when '0'
-          return "00111"
-        when '1'
-          return "11100"
-        when '2'
-          return "11010"
-        when '3'
-          return "11001"
-        when '4'
-          return "10110"
-        when '5'
-          return "10101"
-        when '6'
-          return "10011"
-        when '7'
-          return "01110"
-        when '8'
-          return "01101"
-        when '9'
-          return "01011"
-        else
-          return nil
         end
       end
     end

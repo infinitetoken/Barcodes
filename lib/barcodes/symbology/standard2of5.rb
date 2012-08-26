@@ -3,6 +3,18 @@ require 'barcodes/symbology/standard'
 module Barcodes
   module Symbology
     class Standard2Of5 < Standard
+      def self.charset
+        ['0','1','2','3','4','5','6','7','8','9','S','E'].collect {|c| c.bytes.to_a[0] }
+      end
+      
+      def self.valueset
+        [
+          '10101110111010','11101010101110','10111010101110','11101110101010',
+          '10101110101110','11101011101010','10111011101010','10101011101110',
+          '11101010111010','10111010111010','11011010','1101011'
+        ]
+      end
+      
       def initialize(args={})
         super(args)
         
@@ -12,39 +24,6 @@ module Barcodes
       
       def formatted_data
         @start_character + @data + @stop_character
-      end
-      
-      protected
-      
-      def _encode_character(character)
-        case character
-        when '0'
-          return "10101110111010"
-        when '1'
-          return "11101010101110"
-        when '2'
-          return "10111010101110"
-        when '3'
-          return "11101110101010"
-        when '4'
-          return "10101110101110"
-        when '5'
-          return "11101011101010"
-        when '6'
-          return "10111011101010"
-        when '7'
-          return "10101011101110"
-        when '8'
-          return "11101010111010"
-        when '9'
-          return "10111010111010"
-        when 'S'
-          return "11011010"
-        when 'E'
-          return "1101011"
-        else
-          return nil
-        end
       end
     end
   end

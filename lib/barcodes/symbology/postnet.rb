@@ -3,6 +3,18 @@ require 'barcodes/symbology/base'
 module Barcodes
   module Symbology
     class Postnet < Base
+      def self.charset
+        ['0','1','2','3','4','5','6','7','8','9'].collect {|c| c.bytes.to_a[0] }
+      end
+      
+      def self.valueset
+        [
+          '11000','00011','00101','00110',
+          '01001','01010','01100','10001',
+          '10010','10100'
+        ]
+      end
+      
       def formatted_data
         checksum = self.checksum
         unless checksum.nil?
@@ -13,7 +25,7 @@ module Barcodes
       def encoded_data
         if self.valid?
           encoded_data = ''
-          self.formatted_data.each_char do |char|
+          self.formatted_data.each_byte do |char|
             encoded_data += self._encode_character char
           end
           return '1' + encoded_data + '1'
@@ -50,7 +62,7 @@ module Barcodes
       end
       
       def valid?
-        @data.each_char do |char|
+        @data.each_byte do |char|
           if self._encode_character(char).nil?
             return false
           end
@@ -87,35 +99,6 @@ module Barcodes
           end
 
           pdf.restore_graphics_state
-        end
-      end
-      
-      protected
-      
-      def _encode_character(character)
-        case character
-        when '0'
-          return "11000"
-        when '1'
-          return "00011"
-        when '2'
-          return "00101"
-        when '3'
-          return "00110"
-        when '4'
-          return "01001"
-        when '5'
-          return "01010"
-        when '6'
-          return "01100"
-        when '7'
-          return "10001"
-        when '8'
-          return "10010"
-        when '9'
-          return "10100"
-        else
-          return nil
         end
       end
     end

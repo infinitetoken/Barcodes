@@ -3,6 +3,19 @@ require 'barcodes/symbology/standard'
 module Barcodes
   module Symbology
     class Code11 < Standard
+      def self.charset
+        ['0','1','2','3','4','5','6','7','8','9','-','S'].collect {|c| c.bytes.to_a[0] }
+      end
+      
+      def self.valueset
+        [
+          '1010110','11010110','10010110',
+          '11001010','10110110','11011010',
+          '10011010','10100110','11010010',
+          '1101010','1011010','10110010'
+        ]
+      end
+      
       def initialize(args={})
         super(args)
         
@@ -54,37 +67,6 @@ module Barcodes
           return value.to_s
         elsif value == 10
           return '-'
-        end
-      end
-      
-      def _encode_character(character)
-        case character
-        when '0'
-          return "1010110"
-        when '1'
-          return "11010110"
-        when '2'
-          return "10010110"
-        when '3'
-          return "11001010"
-        when '4'
-          return "10110110"
-        when '5'
-          return "11011010"
-        when '6'
-          return "10011010"
-        when '7'
-          return "10100110"
-        when '8'
-          return "11010010"
-        when '9'
-          return "1101010"
-        when '-'
-          return "1011010"
-        when 'S'
-          return "10110010"
-        else
-          return nil
         end
       end
     end

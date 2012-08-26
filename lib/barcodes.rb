@@ -21,6 +21,8 @@ module Barcodes
         return Symbology::Code93.new(options)
       when 'Code93Extended', 'Code 93 Extended', 'code93extended', Barcodes::Symbology::CODE_93_EXTENDED
         return Symbology::Code93Extended.new(options)
+      when 'Code128', 'Code 128', 'code128', Barcodes::Symbology::CODE_128
+        return Symbology::Code128.new(options)
       when 'MSI', 'Modified Plessey', 'msi', Barcodes::Symbology::MSI
         return Symbology::Msi.new(options)
       when 'MSI Mod 10', 'Modified Plessey Mod 10', 'msi_mod_10', Barcodes::Symbology::MSI_MOD_10

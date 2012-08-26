@@ -10,25 +10,38 @@ module Barcodes
           pdf.fill_color self.color
         
           pdf.transparent self.alpha do
-            barcode_box_width = ((self.encoded_data.length * self.bar_width) * 0.001) * 72.0
+            quiet_zone_width_pixels = (self.quiet_zone_width * 0.001) * 72.0
+            barcode_box_width_pixels = ((self.encoded_data.length * self.bar_width) * 0.001) * 72.0
             bar_height_pixels = (self.bar_height * 0.001) * 72.0
             bar_width_pixels = (self.bar_width * 0.001) * 72.0
             caption_height_pixels = ((self.caption_height * 0.001) * 72.0)
-          
-            pdf.bounding_box([((self.quiet_zone_width * 0.001) * 72.0), ((self.height * 0.001) * 72.0)], :width => barcode_box_width, :height => bar_height_pixels) do
+            barcode_height_pixels = ((self.height * 0.001) * 72.0)
+            
+            pdf.bounding_box([quiet_zone_width_pixels, barcode_height_pixels], :width => barcode_box_width_pixels, :height => bar_height_pixels) do
               index = 0
+              bar_count = 0
+              origin = []
               self.encoded_data.each_char do |char|
-                origin = [index * bar_width_pixels,bar_height_pixels]
                 if char == '1'
-                  pdf.fill_rectangle origin, bar_width_pixels, bar_height_pixels
+                  if bar_count == 0
+                    origin = [index * bar_width_pixels, bar_height_pixels]
+                  end
+                  bar_count += 1
+                else
+                  pdf.fill_rectangle origin, bar_width_pixels * bar_count, bar_height_pixels
+                  bar_count = 0
                 end
                 index += 1
+              end
+              
+              if bar_count > 0
+                pdf.fill_rectangle origin, bar_width_pixels * bar_count, bar_height_pixels
               end
             end
           
             options = {
               :at => [((self.quiet_zone_width * 0.001) * 72.0), caption_height_pixels],
-              :width => barcode_box_width, 
+              :width => barcode_box_width_pixels, 
               :height => caption_height_pixels,
               :overflow => :truncate,
               :size => self.font_size,
