@@ -1,8 +1,23 @@
+# Barcodes is a RubyGem for creating and rendering common barcode symbologies.
+#
+# Author::    Aaron Wright  (mailto:acwrightdesign@gmail.com)
+# Copyright:: Copyright (c) 2012 Infinite Token LLC
+# License::  MIT License
+
 require 'barcodes/symbology/base'
 
 module Barcodes
   module Symbology
+    
+    # This class represents the Code 39 symbology.
+    # Code 39 can encode the numbers 0-9 and all capital
+    # letters along with the following symbols: ' ','-',
+    # '.','$','/','+','%','*'
+    # 
+    # More info: http://en.wikipedia.org/wiki/Code_39
     class Code39 < Base
+      
+      # The Code 39 character set
       def self.charset
         [
           '0','1','2','3','4','5','6','7','8','9',
@@ -13,6 +28,7 @@ module Barcodes
         ].collect {|c| c.bytes.to_a[0] }
       end
       
+      # The Code 39 values set
       def self.valueset
         [
           "1010011011010","1101001010110","1011001010110","1101100101010",
@@ -29,6 +45,9 @@ module Barcodes
         ]
       end
       
+      # Creates a new Code39 instance.
+      # Code 39 must have the start and stop characters
+      # '*' so they are overridden here.
       def initialize(args={})
         super(args)
         
@@ -36,10 +55,14 @@ module Barcodes
         @stop_character = '*'
       end
       
+      # Code 39 includes the start and stop symbols in
+      # the caption so caption_data is overridden here
+      # to return the formatted data string
       def caption_data
         self.formatted_data
       end
       
+      # Start character + data + stop character
       def formatted_data
         @start_character + @data + @stop_character
       end

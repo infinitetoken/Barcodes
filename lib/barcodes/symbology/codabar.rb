@@ -1,12 +1,27 @@
+# Barcodes is a RubyGem for creating and rendering common barcode symbologies.
+#
+# Author::    Aaron Wright  (mailto:acwrightdesign@gmail.com)
+# Copyright:: Copyright (c) 2012 Infinite Token LLC
+# License::  MIT License
+
 require 'barcodes/symbology/base'
 
 module Barcodes
   module Symbology
+    
+    # This class represents the Codabar symbology.
+    # Codabar can encode the numbers 0-9 and the 
+    # following symbols: -,$,:,/,.,+
+    # 
+    # More info: http://en.wikipedia.org/wiki/Codabar
     class Codabar < Base
+      
+      # Codabar character set (0-9,-,$,:,/,.,+)
       def self.charset
         ['0','1','2','3','4','5','6','7','8','9','-','$',':','/','.','+','A','B','C','D'].collect {|c| c.bytes.to_a[0] }
       end
       
+      # Codabar values set
       def self.valueset
         [
           '1010100110','1010110010','1010010110','110010101',
@@ -17,6 +32,9 @@ module Barcodes
         ]
       end
       
+      # Creates a new Codabar instance with given arguments.
+      # Sets the start character to 'A' and stop character to
+      # 'B' if none are given
       def initialize(args={})
         unless args.has_key? :start_character
           args[:start_character] = 'A'
@@ -28,6 +46,7 @@ module Barcodes
         super(args)
       end
       
+      # Start character + data + stop character
       def formatted_data
         @start_character + @data + @stop_character
       end

@@ -1,12 +1,25 @@
+# Barcodes is a RubyGem for creating and rendering common barcode symbologies.
+#
+# Author::    Aaron Wright  (mailto:acwrightdesign@gmail.com)
+# Copyright:: Copyright (c) 2012 Infinite Token LLC
+# License::  MIT License
+
 require 'barcodes/symbology/code39extended'
 
 module Barcodes
   module Symbology
+    
+    # Modulo 43 checksum version of Code 39 Extended
+    # 
+    # More info: http://en.wikipedia.org/wiki/Code_39
     class Code39ExtendedMod43 < Code39Extended
+      
+      # Returns caption data without checksum
       def caption_data
         @start_character + @data + @stop_character
       end
       
+      # Start character + data + checksum + stop character
       def formatted_data
         checksum = self.checksum
         unless checksum.nil?
@@ -14,6 +27,7 @@ module Barcodes
         end
       end
       
+      # Calculates the checksum using the provided data
       def checksum
         if valid?
           sum = 0

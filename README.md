@@ -60,7 +60,7 @@ You could also do this:
     ascii_renderer = Barcodes::Renderer::Ascii.new(barcode)
     ascii_renderer.render('/path/to/output.txt')
   
-The following options (defaults shown below) are available for all barcode symbologies:
+The following options (defaults shown below) are available (where applicable) for all barcode symbologies:
 
     {
       :data => '0123456789',

@@ -1,11 +1,23 @@
+# Barcodes is a RubyGem for creating and rendering common barcode symbologies.
+#
+# Author::    Aaron Wright  (mailto:acwrightdesign@gmail.com)
+# Copyright:: Copyright (c) 2012 Infinite Token LLC
+# License::  MIT License
+
 require 'barcodes/symbology/code39'
 
 module Barcodes
   module Symbology
+    
+    # This class represents the Code 39 Extended symbology.
+    # Code 39 Extended can encode all standard ASCII characters.
+    # 
+    # More info: http://en.wikipedia.org/wiki/Code_39
     class Code39Extended < Code39
       
       protected
       
+      # Encodes given character (as ASCII integer) into 1's and 0's
       def _encode_character(character)
         unless (character == 36 || character == 37 || character == 43)
           unless super(character).nil?

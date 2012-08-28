@@ -1,9 +1,53 @@
+# Barcodes is a RubyGem for creating and rendering common barcode symbologies.
+#
+# Author::    Aaron Wright  (mailto:acwrightdesign@gmail.com)
+# Copyright:: Copyright (c) 2012 Infinite Token LLC
+# License::  MIT License
+       
 require 'barcodes/version'
 require 'barcodes/symbology'
 require 'barcodes/renderer'
 
+# Barcodes is a RubyGem for creating and rendering common barcode symbologies. Here are some of the current features:
+# 
+# * Many common symbologies to choose from
+# * PDF and ASCII rendering support
+# * Command line interface for rendering barcodes to console or file
+# 
+# Currently supported symbologies:
+# 
+# * Code 11
+# * Code 128
+# * Code 39
+# * Code 39 Mod 43
+# * Code 39 Extended
+# * Code 39 Extended Mod 43
+# * Code 93
+# * Code 93 Extended
+# * EAN8
+# * EAN13
+# * Interleaved 2 of 5
+# * Interleaved 2 of 5 Mod 10
+# * MSI
+# * MSI Mod 10
+# * MSI Mod 11
+# * PLANET
+# * POSTNET
+# * Standard 2 of 5
+# * Standard 2 of 5 Mod 10
+# * UPC-A
+
 module Barcodes
+  
+  # This class is a helper for quickly instantiating
+  # a concrete barcode class and also provides a helper
+  # for quick rendering.
   class << self
+    
+    # Creates a new barcode of type <symbology> with given
+    # options and returns an instantiated instance.
+    # 
+    # See Barcodes::Symbology::Base for options
     def create(symbology, options={})
       if Symbology::CODABAR.include? symbology
         return Symbology::Codabar.new(options)
@@ -52,6 +96,14 @@ module Barcodes
       end
     end
     
+    # Creates a new barcode of type <symbology> with given
+    # options and renders barcode using given renderer.
+    #
+    # Optionally takes <filename> and <renderer>. If no
+    # filename is given rendering will be outputted as a
+    # string. Uses PDF renderer by default.
+    # 
+    # See Barcodes::Symbology::Base for options
     def render(symbology, filename=nil, options={}, renderer=Barcodes::Renderer::PDF)
       if renderer == Barcodes::Renderer::ASCII
         Barcodes::Renderer::Ascii.new(self.create(symbology, options)).render(filename)

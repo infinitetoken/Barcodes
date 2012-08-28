@@ -1,8 +1,23 @@
+# Barcodes is a RubyGem for creating and rendering common barcode symbologies.
+#
+# Author::    Aaron Wright  (mailto:acwrightdesign@gmail.com)
+# Copyright:: Copyright (c) 2012 Infinite Token LLC
+# License::  MIT License
+
 require 'barcodes/symbology/base'
 
 module Barcodes
   module Symbology
+    
+    # This class represents the Code 93 symbology.
+    # Code 93 can encode the characters 0-9 and A-Z along
+    # with the following characters: "-","."," ","$",
+    # "/","+","%","*"
+    # 
+    # More info: http://en.wikipedia.org/wiki/Code_93
     class Code93 < Base
+      
+      # The Code 93 character set
       def self.charset
         [
           "0","1","2","3","4","5","6","7","8","9",
@@ -13,6 +28,7 @@ module Barcodes
         ].collect {|c| c.bytes.to_a[0] }
       end
       
+      # The Code 93 values set
       def self.valueset
         [
           "100010100","101001000","101000100","101000010",
@@ -30,6 +46,9 @@ module Barcodes
         ]
       end
       
+      # Creates a new Code93 instance.
+      # Code 93 must have the start and stop characters
+      # '*' so they are overridden here.
       def initialize(args={})
         super(args)
         
@@ -37,10 +56,14 @@ module Barcodes
         @stop_character = '*'
       end
       
+      # Code 39 includes the start and stop symbols in
+      # the caption so caption_data is overridden here
+      # to return the formatted data string
       def caption_data
         @start_character + @data + @stop_character
       end
       
+      # Start character + data + checksum + stop character
       def formatted_data
         checksum = self.checksum
         unless checksum.nil?
@@ -48,6 +71,7 @@ module Barcodes
         end
       end
       
+      # Calculates the C and K checksum values
       def checksum
         if self.valid?
           c_value = self._checksum(@data, 20)
@@ -58,6 +82,7 @@ module Barcodes
       
       protected
       
+      # Calculates the checksum with given data and given weighting
       def _checksum(data, weight_max)
         sum = 0
         weight = 1

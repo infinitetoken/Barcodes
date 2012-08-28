@@ -1,9 +1,21 @@
+# Barcodes is a RubyGem for creating and rendering common barcode symbologies.
+#
+# Author::    Aaron Wright  (mailto:acwrightdesign@gmail.com)
+# Copyright:: Copyright (c) 2012 Infinite Token LLC
+# License::  MIT License
+
 require 'barcodes/symbology/code93'
 
 module Barcodes
   module Symbology
+    
+    # This class represents the Code 93 Extended symbology.
+    # Code 93 Extended can encode all standard ASCII characters.
+    # 
+    # More info: http://en.wikipedia.org/wiki/Code_93
     class Code93Extended < Code93
       
+      # Start character + data + checksum + stop character
       def formatted_data
         checksum = self.checksum
         unless checksum.nil?
@@ -11,6 +23,7 @@ module Barcodes
         end
       end
       
+      # Calculates the C and K checksum values
       def checksum
         if self.valid?
           data = self._data
@@ -20,12 +33,15 @@ module Barcodes
         end
       end
       
+      # Validates the data
       def valid?
         return !self._data.nil?
       end
       
       protected
-
+      
+      # Format the data string by adding shift characters when
+      # applicable
       def _data
         _data = ''
         self.data.each_byte do |char|

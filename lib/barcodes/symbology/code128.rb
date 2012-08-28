@@ -1,17 +1,44 @@
+# Barcodes is a RubyGem for creating and rendering common barcode symbologies.
+#
+# Author::    Aaron Wright  (mailto:acwrightdesign@gmail.com)
+# Copyright:: Copyright (c) 2012 Infinite Token LLC
+# License::  MIT License
+
 require 'barcodes/symbology/base'
 
 module Barcodes
   module Symbology
+    
+    # This class represents the Code 128 symbology.
+    # Code 128 can encode all 128 ASCII characters using
+    # three different code sets.
+    #
+    # More info: http://en.wikipedia.org/wiki/Code_128
+    # 
+    # Assigned to code sets where applicable are the following 
+    # special characters representing Code 128 functions:
+    # 
+    # * START_A - \xF4
+    # * START_B - \xF5
+    # * START_C - \xF6
+    # * CODE_A - \xF7
+    # * CODE_B - \xF8
+    # * CODE_C - \xF9
+    # * FNC1 - \xFA
+    # * FNC2 - \xFB 
+    # * FNC3 - \xFC
+    # * FNC4 - \xFD
+    # * SHIFT - \xFE
+    # * STOP - \xFF
     class Code128 < Base
-      # Assigned to codesets are the following special characters representing Code 128 functions
-      # START_A - \xF4, START_B - \xF5, START_C - \xF6, 
-      # CODE_A - \xF7, CODE_B - \xF8, CODE_C - \xF9,
-      # FNC1 - \xFA, FNC2 - \xFB, FNC3 - \xFC, FNC4 - \xFD,
-      # SHIFT - \xFE, STOP - \xFF
+      
+      # Code 128 uses three special character sets so this
+      # returns an empty array
       def self.charset
         [].collect {|c| c.bytes.to_a[0] }
       end
       
+      # Character code set A
       def self.charset_a
         [
           " ","!","\"","#","$","%","&","'","(",")","*","+",",","-",".","/",
@@ -26,6 +53,7 @@ module Barcodes
         ].collect {|c| c.bytes.to_a[0] }
       end
       
+      # Character code set B
       def self.charset_b
         [
           " ","!","\"","#","$","%","&","'","(",")","*","+",",","-",".","/",
@@ -38,6 +66,7 @@ module Barcodes
         ].collect {|c| c.bytes.to_a[0] }
       end
       
+      # Character code set C
       def self.charset_c
         [
           "00","01","02","03","04","05","06","07","08","09","10","11","12","13",
@@ -51,6 +80,7 @@ module Barcodes
         ].collect {|c| c.bytes.to_a.length > 1 ? c.bytes.to_a : c.bytes.to_a[0] }
       end
       
+      # Code 128 values set
       def self.valueset
         [
           "11011001100","11001101100","11001100110","10010011000","10010001100",
@@ -78,10 +108,12 @@ module Barcodes
         ]
       end
       
+      # Data + checksum + stop character
       def formatted_data
         self._prepared_data + self.checksum + "\xFF"
       end
       
+      # Data encoded as 1's and 0's using three code sets
       def encoded_data
         if self.valid?
           encoded_data = ""
@@ -141,6 +173,7 @@ module Barcodes
         end
       end
       
+      # Calculates the checksum using barcode data
       def checksum
         if valid?
           sum = 0
@@ -204,6 +237,7 @@ module Barcodes
         end
       end
       
+      # Validates the data
       def valid?
         valid = @data.length > 0 ? true : false
       
@@ -219,6 +253,8 @@ module Barcodes
       
       protected
       
+      # Inspects barcode data and determines the best character sets to use
+      # for provided data
       def _prepared_data
         start = "\xF5"
         charset = "B"
@@ -290,10 +326,13 @@ module Barcodes
         return data
       end
     
+      # Returns nil due to Code 128 using special character sets
       def _encode_character(character)
         return nil
       end
       
+      # Encodes a single character (as ASCII integer) using given 
+      # character set
       def _encode_character_in_charset(character, charset)
         case charset
         when 'A'
