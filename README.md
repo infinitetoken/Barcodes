@@ -35,53 +35,53 @@ Installation
 
 Barcodes is a RubyGem and can be installed using:
 
-  gem install barcodes
+    $ gem install barcodes
   
 Usage
 -----
 
 If you want to create and render a barcode all in one step you can simply do the following:
 
-  Barcodes.render('Codabar', '/path/to/output.pdf', {:data => '12345'})
+    Barcodes.render('Codabar', '/path/to/output.pdf', {:data => '12345'})
   
 The output path can be left empty and the rendered output will be returned as a string. 
 
 By default Barcodes uses the PDF renderer. To use the ASCII renderer you would do the following:
 
-  Barcodes.render('Codabar', '/path/to/output.pdf', {:data => '12345'}, Barcodes::Renderer::Ascii)
+    Barcodes.render('Codabar', '/path/to/output.pdf', {:data => '12345'}, Barcodes::Renderer::Ascii)
   
 You could also do this:
 
-  barcode = Barcodes.create('Postnet', {:data => '44555'})
+    barcode = Barcodes.create('Postnet', {:data => '44555'})
   
-  pdf_renderer = Barcodes::Renderer::Pdf.new(barcode)
-  pdf_renderer.render('/path/to/output.pdf')
+    pdf_renderer = Barcodes::Renderer::Pdf.new(barcode)
+    pdf_renderer.render('/path/to/output.pdf')
   
-  ascii_renderer = Barcodes::Renderer::Ascii.new(barcode)
-  ascii_renderer.render('/path/to/output.txt')
+    ascii_renderer = Barcodes::Renderer::Ascii.new(barcode)
+    ascii_renderer.render('/path/to/output.txt')
   
 The following options (defaults shown below) are available for all barcode symbologies:
 
-  {
-    :data => '0123456789',
-    :start_character => '',
-    :stop_character => '',
-    :bar_width => 20, # in mils
-    :bar_height => 1000, # in mils
-    :alpha => 1.0,
-    :color => '000000',
-    :caption_height => 180, # in mils
-    :caption_size => 167, # in mils
-    :captioned => true,
-  }
+    {
+      :data => '0123456789',
+      :start_character => '',
+      :stop_character => '',
+      :bar_width => 20, # in mils
+      :bar_height => 1000, # in mils
+      :alpha => 1.0,
+      :color => '000000',
+      :caption_height => 180, # in mils
+      :caption_size => 167, # in mils
+      :captioned => true,
+    }
   
 Command Line
 ------------
 
 Barcodes also provides a command line tool for rendering barcodes:
 
-  $ barcodes -h
-  Usage: barcodes [OPTIONS] symbology target
+    $ barcodes -h
+    Usage: barcodes [OPTIONS] symbology target
 
       -D, --data [DATA]                The barcode data to encode (0123456789)
       -s [START_CHARACTER],            The barcode start character if applicable
