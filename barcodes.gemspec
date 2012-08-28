@@ -8,8 +8,8 @@ Gem::Specification.new do |s|
   s.authors     = ["Aaron Wright"]
   s.email       = ["acwrightdesign@gmail.com"]
   s.homepage    = ""
-  s.summary     = %q{PDF barcode creation using Ruby}
-  s.description = %q{Barcodes can help you build and render barcodes as PDF}
+  s.summary     = %q{Barcode creation using Ruby!}
+  s.description = %q{Barcodes is a RubyGem for creating and rendering common barcode symbologies.}
 
   s.rubyforge_project = "barcodes"
 
@@ -18,9 +18,6 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
   
-  # specify any dependencies here; for example:
-  # s.add_development_dependency "rspec"
-  # s.add_runtime_dependency "rest-client"
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec'
   s.add_runtime_dependency 'prawn'

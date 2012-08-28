@@ -1,8 +1,8 @@
-require 'barcodes/symbology/standard'
+require 'barcodes/symbology/base'
 
 module Barcodes
   module Symbology
-    class Code93 < Standard
+    class Code93 < Base
       def self.charset
         [
           "0","1","2","3","4","5","6","7","8","9",

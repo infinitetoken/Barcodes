@@ -1,8 +1,8 @@
-require 'barcodes/symbology/standard'
+require 'barcodes/symbology/base'
 
 module Barcodes
   module Symbology
-    class Code128 < Standard
+    class Code128 < Base
       # Assigned to codesets are the following special characters representing Code 128 functions
       # START_A - \xF4, START_B - \xF5, START_C - \xF6, 
       # CODE_A - \xF7, CODE_B - \xF8, CODE_C - \xF9,

@@ -2,7 +2,7 @@ require 'barcodes/symbology/base'
 
 module Barcodes
   module Symbology
-    class Msi < Standard
+    class Msi < Base
       def self.charset
         ['0','1','2','3','4','5','6','7','8','9','S','E'].collect {|c| c.bytes.to_a[0] }
       end
