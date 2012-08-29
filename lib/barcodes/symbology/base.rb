@@ -13,12 +13,6 @@ module Barcodes
       # Data to be encoded.
       attr_accessor :data
       
-      # Start character if applicable
-      attr_accessor :start_character
-      
-      # Stop character if applicable
-      attr_accessor :stop_character
-      
       # Bar width in mils
       attr_accessor :bar_width
       
@@ -59,8 +53,6 @@ module Barcodes
       # See class attributes for list of acceptable arguments.
       def initialize(args={})
         @data = '0123456789'
-        @start_character = ''
-        @stop_character = ''
         @bar_width = 20
         @bar_height = 1000
         @alpha = 1.0

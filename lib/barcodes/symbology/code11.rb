@@ -31,8 +31,6 @@ module Barcodes
       end
       
       # Creates a new Code11 instance.
-      # Code 11 must have the start and stop characters
-      # 'S' so they are overridden here.
       def initialize(args={})
         super(args)
         

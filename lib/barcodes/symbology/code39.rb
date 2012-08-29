@@ -46,8 +46,6 @@ module Barcodes
       end
       
       # Creates a new Code39 instance.
-      # Code 39 must have the start and stop characters
-      # '*' so they are overridden here.
       def initialize(args={})
         super(args)
         

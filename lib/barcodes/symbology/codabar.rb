@@ -16,6 +16,12 @@ module Barcodes
     # More info: http://en.wikipedia.org/wiki/Codabar
     class Codabar < Base
       
+      # Start character
+      attr_accessor :start_character
+      
+      # Stop character
+      attr_accessor :stop_character
+      
       # Codabar character set (0-9,-,$,:,/,.,+)
       def self.charset
         ['0','1','2','3','4','5','6','7','8','9','-','$',':','/','.','+','A','B','C','D'].collect {|c| c.bytes.to_a[0] }
@@ -33,8 +39,6 @@ module Barcodes
       end
       
       # Creates a new Codabar instance with given arguments.
-      # Sets the start character to 'A' and stop character to
-      # 'B' if none are given
       def initialize(args={})
         unless args.has_key? :start_character
           args[:start_character] = 'A'

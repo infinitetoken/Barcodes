@@ -8,7 +8,14 @@ require 'barcodes/symbology/ean'
 
 module Barcodes
   module Symbology
+    
+    # This class represents the EAN8 symbology
+    # EAN8 can encode only numbers 0-9
+    # 
+    # More info: http://en.wikipedia.org/wiki/International_Article_Number_(EAN)
     class Ean8 < Ean
+      
+      # Creates a new Ean13 instance
       def initialize(args={})
         unless args.has_key? :data
           args[:data] = '0123456'
@@ -17,10 +24,12 @@ module Barcodes
         super(args)
       end
       
+      # Returns start character + data + center character + data + checksum + stop character
       def formatted_data
         @start_character + @data[0..3] + @center_character + @data[4..6] + self.checksum + @stop_character
       end
       
+      # Encodes data into 1's and 0's
       def encoded_data
         if self.valid?
           formatted_data = self.formatted_data
@@ -44,6 +53,9 @@ module Barcodes
         end
       end
       
+      # Determines whether or not the barcode data to be encoded
+      # is valid.
+      # Data length must be exactly 7 digits
       def valid?
         unless super
           return false

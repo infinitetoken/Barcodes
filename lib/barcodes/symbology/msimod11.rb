@@ -8,7 +8,14 @@ require 'barcodes/symbology/msi'
 
 module Barcodes
   module Symbology
+    
+    # This class represents the MSI Mod 11 symbology
+    # MSI Mod 11 can encode only numbers 0-9
+    # 
+    # More info: http://en.wikipedia.org/wiki/MSI_Barcode
     class MsiMod11 < Msi
+      
+      # Returns start character + data + checksum + stop character
       def formatted_data
         checksum = self.checksum
         unless checksum.nil?
@@ -16,6 +23,7 @@ module Barcodes
         end
       end
       
+      # Calculates the checksum using the provided data
       def checksum
         if self.valid?
           sum = 0

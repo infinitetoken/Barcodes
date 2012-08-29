@@ -47,8 +47,6 @@ module Barcodes
       end
       
       # Creates a new Code93 instance.
-      # Code 93 must have the start and stop characters
-      # '*' so they are overridden here.
       def initialize(args={})
         super(args)
         

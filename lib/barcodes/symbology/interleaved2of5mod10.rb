@@ -8,7 +8,14 @@ require 'barcodes/symbology/interleaved2of5'
 
 module Barcodes
   module Symbology
+    
+    # This class represents the Interleaved 2 of 5 Mod 10 symbology
+    # Interleaved 2 of 5 Mod 10 can encode only numbers 0-9
+    # 
+    # More info: http://en.wikipedia.org/wiki/Interleaved_2_of_5
     class Interleaved2Of5Mod10 < Interleaved2Of5
+      
+      # Returns start character + data + checksum + stop character
       def formatted_data
         checksum = self.checksum
         unless checksum.nil?
@@ -16,6 +23,7 @@ module Barcodes
         end
       end
       
+      # Calculates the checksum using provided data
       def checksum
         even_sum = 0
         odd_sum = 0
