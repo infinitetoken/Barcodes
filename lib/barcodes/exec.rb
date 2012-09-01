@@ -42,9 +42,9 @@ module Barcodes
     def run
       unless self.symbology.nil?
         unless self.options[:ascii]
-          Barcodes::Renderer::Pdf.new(Barcodes.create(self.symbology, self.options)).render
+          Barcodes::Renderer::Pdf.new(Barcodes.create(self.symbology, self.options)).render(self.target)
         else
-          Barcodes::Renderer::Ascii.new(Barcodes.create(self.symbology, self.options)).render
+          Barcodes::Renderer::Ascii.new(Barcodes.create(self.symbology, self.options)).render(self.target)
         end
       end
     end

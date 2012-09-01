@@ -21,10 +21,25 @@ module Barcodes
       
       # Render the barcode as PDF with optional filename
       def render(filename=nil)
+        pdf = self.pdf
+        
+        self.draw(pdf)
+        
         unless filename.nil?
-          self.pdf.render_file filename
+          pdf.render_file filename
         else
-          self.pdf.render
+          pdf.render
+        end
+      end
+      
+      # Draws the barcode to the provided Prawn::Document
+      def draw(pdf)
+        if self.barcode.class == Barcodes::Symbology::Ean8 || self.barcode.class == Barcodes::Symbology::Ean13 || self.barcode.class == Barcodes::Symbology::UpcA
+          self._draw_ean_upc(self.barcode, pdf)
+        elsif self.barcode.class == Barcodes::Symbology::Planet || self.barcode.class == Barcodes::Symbology::Postnet
+          self._draw_planet_postnet(self.barcode, pdf)
+        else
+          self._draw_standard(self.barcode, pdf)
         end
       end
       
@@ -41,15 +56,7 @@ module Barcodes
           :bottom_margin => 0
         }
         
-        Prawn::Document.new document_options do |pdf|
-          if @barcode.class == Barcodes::Symbology::Ean8 || @barcode.class == Barcodes::Symbology::Ean13 || @barcode.class == Barcodes::Symbology::UpcA
-            self._draw_ean_upc(@barcode, pdf)
-          elsif @barcode.class == Barcodes::Symbology::Planet || @barcode.class == Barcodes::Symbology::Postnet
-            self._draw_planet_postnet(@barcode, pdf)
-          else
-            self._draw_standard(@barcode, pdf)
-          end
-        end
+        Prawn::Document.new document_options
       end
       
       protected
