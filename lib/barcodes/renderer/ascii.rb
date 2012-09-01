@@ -7,13 +7,18 @@
 # 
 module Barcodes
   module Renderer
+    
+    # This class handles ASCII rendering support.
     class Ascii
+      # The barcode instance
       attr_accessor :barcode
       
+      # Creates a new Barcodes::Renderer::Ascii instance
       def initialize(barcode=nil)
         @barcode = barcode
       end
       
+      # Renders the barcode as ASCII string with optional filename
       def render(filename=nil)
         rendering = ''
         if @barcode.class == Barcodes::Symbology::Ean8
@@ -37,6 +42,7 @@ module Barcodes
       
       protected
       
+      # Render standard barcode symbologies
       def _render_standard(barcode)
         ascii = ""
         10.times do |i|
@@ -60,6 +66,7 @@ module Barcodes
         ascii += "\n"
       end
       
+      # Render EAN8 barcode symbology
       def _render_ean8(barcode)
         encoded_data = barcode.encoded_data
         
@@ -95,6 +102,7 @@ module Barcodes
         ascii += "  \n"
       end
       
+      # Render EAN13 barcode symbology
       def _render_ean13(barcode)
         encoded_data = barcode.encoded_data
         
@@ -136,6 +144,7 @@ module Barcodes
         ascii += "  \n"
       end
       
+      # Render a PLANET or POSTNET barcode symbology
       def _render_planet_postnet(barcode)
         ascii = ""
         6.times do |i|
@@ -155,6 +164,7 @@ module Barcodes
         ascii += "\n"
       end
       
+      # Render UPC-A barcode symbology
       def _render_upca(barcode)
         encoded_data = barcode.encoded_data
         

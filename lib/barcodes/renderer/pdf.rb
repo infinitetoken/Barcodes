@@ -8,13 +8,18 @@ require 'prawn'
 
 module Barcodes
   module Renderer
+    
+    # This class handles PDF rendering support.
     class Pdf
+      # The barcode instance
       attr_accessor :barcode
       
+      # Creates a new Barcodes::Renderer::Pdf instance
       def initialize(barcode=nil)
         @barcode = barcode
       end
       
+      # Render the barcode as PDF with optional filename
       def render(filename=nil)
         unless filename.nil?
           self.pdf.render_file filename
@@ -23,6 +28,7 @@ module Barcodes
         end
       end
       
+      # Returns the instantiated Prawn::Document object
       def pdf
         width = (@barcode.width * 0.001) * 72.0
         height = (@barcode.height * 0.001) * 72.0
@@ -48,6 +54,7 @@ module Barcodes
       
       protected
       
+      # Draw standard barcode symbologies
       def _draw_standard(barcode, pdf)
         if barcode.valid?
           pdf.save_graphics_state
@@ -105,6 +112,7 @@ module Barcodes
         end
       end
       
+      # Draw EAN or UPC symbologies
       def _draw_ean_upc(barcode, pdf)
         if barcode.valid?
           pdf.save_graphics_state
@@ -228,6 +236,7 @@ module Barcodes
         end
       end
       
+      # Draw PLANET or POSTNET symbologies
       def _draw_planet_postnet(barcode, pdf)
         if barcode.valid?
           pdf.save_graphics_state
