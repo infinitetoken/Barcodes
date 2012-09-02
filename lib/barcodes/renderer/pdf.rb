@@ -77,7 +77,7 @@ module Barcodes
             caption_height_pixels = ((barcode.caption_height * 0.001) * 72.0)
             barcode_height_pixels = ((barcode.height * 0.001) * 72.0)
             
-            pdf.bounding_box([quiet_zone_width_pixels, barcode_height_pixels], :width => barcode_box_width_pixels, :height => bar_height_pixels) do
+            pdf.bounding_box([pdf.bounds.left + quiet_zone_width_pixels, pdf.bounds.top], :width => barcode_box_width_pixels, :height => bar_height_pixels) do
               index = 0
               bar_count = 0
               origin = []
@@ -101,7 +101,7 @@ module Barcodes
             
             if barcode.captioned
               options = {
-                :at => [quiet_zone_width_pixels, caption_height_pixels],
+                :at => [quiet_zone_width_pixels, pdf.bounds.top - bar_height_pixels],
                 :width => barcode_box_width_pixels, 
                 :height => caption_height_pixels,
                 :overflow => :truncate,
@@ -150,7 +150,7 @@ module Barcodes
               end_range = (93..encoded_data.length)
             end
             
-            pdf.bounding_box([quiet_zone_width_pixels, barcode_height_pixels], :width => barcode_box_width_pixels, :height => bar_height_pixels) do
+            pdf.bounding_box([pdf.bounds.left + quiet_zone_width_pixels, pdf.bounds.top], :width => barcode_box_width_pixels, :height => bar_height_pixels) do
               index = 0
               bar_count = 0
               origin = []
@@ -178,7 +178,7 @@ module Barcodes
 
             if barcode.captioned
               number_system_options = {
-                :at => [0, caption_height_pixels * 1.5],
+                :at => [pdf.bounds.left, pdf.bounds.top - bar_height_pixels + (caption_height_pixels * 0.5)],
                 :width => quiet_zone_width_pixels, 
                 :height => caption_height_pixels,
                 :overflow => :truncate,
@@ -188,7 +188,7 @@ module Barcodes
                 :style => :normal
               }
               check_digit_options = {
-                :at => [pdf.bounds.width - quiet_zone_width_pixels, caption_height_pixels * 1.5],
+                :at => [pdf.bounds.left + quiet_zone_width_pixels + barcode_box_width_pixels, pdf.bounds.top - bar_height_pixels + (caption_height_pixels * 0.5)],
                 :width => quiet_zone_width_pixels, 
                 :height => caption_height_pixels,
                 :overflow => :truncate,
@@ -198,7 +198,7 @@ module Barcodes
                 :style => :normal
               }
               left_hand_options = {
-                :at => [quiet_zone_width_pixels, caption_height_pixels],
+                :at => [pdf.bounds.left + quiet_zone_width_pixels, pdf.bounds.top - bar_height_pixels],
                 :width => barcode_box_width_pixels * 0.5, 
                 :height => caption_height_pixels,
                 :overflow => :truncate,
@@ -208,7 +208,7 @@ module Barcodes
                 :style => :normal
               }
               right_hand_options = {
-                :at => [quiet_zone_width_pixels + (barcode_box_width_pixels * 0.5), caption_height_pixels],
+                :at => [pdf.bounds.left + quiet_zone_width_pixels + (barcode_box_width_pixels * 0.5), pdf.bounds.top - bar_height_pixels],
                 :width => barcode_box_width_pixels * 0.5, 
                 :height => caption_height_pixels,
                 :overflow => :truncate,
@@ -222,9 +222,9 @@ module Barcodes
                 pdf.text_box barcode.caption_data[0..3], left_hand_options
                 pdf.text_box barcode.caption_data[4..7], right_hand_options
               elsif barcode.data.length == 11 # UPCA
-                left_hand_options[:at] = [quiet_zone_width_pixels + (10 * bar_width_pixels), caption_height_pixels]
+                left_hand_options[:at] = [pdf.bounds.left + quiet_zone_width_pixels + (10 * bar_width_pixels), pdf.bounds.top - bar_height_pixels]
                 left_hand_options[:width] =  (barcode_box_width_pixels * 0.5) - (10 * bar_width_pixels)
-                right_hand_options[:at] = [quiet_zone_width_pixels + (barcode_box_width_pixels * 0.5), caption_height_pixels]
+                right_hand_options[:at] = [pdf.bounds.left + quiet_zone_width_pixels + (barcode_box_width_pixels * 0.5), pdf.bounds.top - bar_height_pixels]
                 right_hand_options[:width] = barcode_box_width_pixels * 0.5 - (10 * bar_width_pixels)
                 
                 pdf.text_box barcode.caption_data[0], number_system_options
@@ -256,7 +256,7 @@ module Barcodes
             half_bar_height_pixels = (50 * 0.001) * 72.0
             bar_width_pixels = (20 * 0.001) * 72.0
 
-            pdf.bounding_box([0, full_bar_height_pixels], :width => barcode_box_width, :height => full_bar_height_pixels) do
+            pdf.bounding_box([pdf.bounds.left, pdf.bounds.top], :width => barcode_box_width, :height => full_bar_height_pixels) do
               index = 0
               barcode.encoded_data.each_char do |char|
                 if char == '1'
