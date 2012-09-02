@@ -46,11 +46,7 @@ If you want to create and render a barcode all in one step you can simply do the
   
 The output path can be left empty and the rendered output will be returned as a string. 
 
-By default Barcodes uses the PDF renderer. To use the ASCII renderer you would do the following:
-
-    Barcodes.render('Codabar', '/path/to/output.pdf', {:data => '12345'}, Barcodes::Renderer::Ascii)
-  
-You could also do this:
+By default Barcodes uses the PDF renderer. To use a different renderer do the following:
 
     barcode = Barcodes.create('Postnet', {:data => '44555'})
   
