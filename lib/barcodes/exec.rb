@@ -15,6 +15,9 @@ module Barcodes
   # It takes command line arguments and options and renders a barcode 
   # using those options.
   class Exec
+    # Array of command line arguments
+    attr_reader :argv
+    
     # The parser instance
     attr_reader :parser
     
@@ -27,12 +30,9 @@ module Barcodes
     # The output target
     attr_reader :target
     
-    # Array of command line arguments
-    attr_reader :arguments
-    
     # Creates a new instance with given command line arguments and options
     def initialize(argv)
-      @arguments = arguments
+      @argv = argv
       @options = {}
       self._init_parser
       self._parse!
@@ -40,12 +40,16 @@ module Barcodes
     
     # Runs the command and renders barcode
     def run
-      unless self.symbology.nil?
-        unless self.options[:ascii]
-          Barcodes::Renderer::Pdf.new(Barcodes.create(self.symbology, self.options)).render(self.target)
-        else
-          Barcodes::Renderer::Ascii.new(Barcodes.create(self.symbology, self.options)).render(self.target)
+      begin
+        unless self.symbology.nil?
+          unless self.options[:ascii]
+            Barcodes::Renderer::Pdf.new(Barcodes.create(self.symbology, self.options)).render(self.target)
+          else
+            Barcodes::Renderer::Ascii.new(Barcodes.create(self.symbology, self.options)).render(self.target)
+          end
         end
+      rescue Exception => e
+        puts e.message
       end
     end
     
@@ -77,14 +81,14 @@ module Barcodes
     def _parse!
       
       begin
-        self.parser.parse!(self.arguments)
+        self.parser.parse!(self.argv)
       rescue
         puts self.parser.help
         exit 1
       end
       
-      @symbology = self.arguments.shift
-      @target = self.arguments.shift
+      @symbology = self.argv.shift
+      @target = self.argv.shift
     end
     
     # Returns the current version
