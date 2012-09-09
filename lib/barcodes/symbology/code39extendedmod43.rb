@@ -19,11 +19,11 @@ module Barcodes
         @start_character + @data + @stop_character
       end
       
-      # Start character + data + checksum + stop character
+      # Start character + prepared data + checksum + stop character
       def formatted_data
         checksum = self.checksum
         unless checksum.nil?
-          @start_character + @data + checksum + @stop_character
+          @start_character + self._data + checksum + @stop_character
         end
       end
       
@@ -31,7 +31,7 @@ module Barcodes
       def checksum
         if valid?
           sum = 0
-          self.data.each_char do |char|
+          self._data.each_char do |char|
             if ('0'..'9').include? char
               sum += char.to_i
             elsif ('A'..'Z').include? char

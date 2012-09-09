@@ -15,90 +15,109 @@ module Barcodes
     # More info: http://en.wikipedia.org/wiki/Code_39
     class Code39Extended < Code39
       
-      protected
+      # Start character + prepared data + stop character
+      def formatted_data
+        @start_character + self._data + @stop_character
+      end
       
-      # Encodes given character (as ASCII integer) into 1's and 0's
-      def _encode_character(character)
-        unless (character == 36 || character == 37 || character == 43)
-          unless super(character).nil?
-            return super(character)
+      # Determines whether or not the barcode data to be encoded
+      # is valid.
+      def valid?
+        valid = self.data.length > 0 ? true : false
+      
+        self._data.each_byte do |char|
+          if self._encode_character(char).nil?
+            return false
+          end
+        end
+      
+        return valid
+      end
+      
+      #protected
+      
+      # Returns prepared barcode data by replacing extended characters
+      def _data
+        prepared_data = ""
+        
+        self.data.each_byte do |character|
+          case character
+          when 0
+            prepared_data += '%' + 'U'
+          when 1..26
+            prepared_data += '$' + (character + 64).chr
+          when 27..31
+            prepared_data += '%' + (character + 38).chr
+          when 127
+            prepared_data += '%' + 'T'
+          when '!'.bytes.to_a[0]
+            prepared_data += '/' + 'A'
+          when '"'.bytes.to_a[0]
+            prepared_data += '/' + 'B'
+          when '#'.bytes.to_a[0]
+            prepared_data += '/' + 'C'
+          when '$'.bytes.to_a[0]
+            prepared_data += '/' + 'D'
+          when '%'.bytes.to_a[0]
+            prepared_data += '/' + 'E'
+          when '&'.bytes.to_a[0]
+            prepared_data += '/' + 'F'
+          when '\''.bytes.to_a[0]
+            prepared_data += '/' + 'G'
+          when '('.bytes.to_a[0]
+            prepared_data += '/' + 'H'
+          when ')'.bytes.to_a[0]
+            prepared_data += '/' + 'I'
+          when '*'.bytes.to_a[0]
+            prepared_data += '/' + 'J'
+          when '+'.bytes.to_a[0]
+            prepared_data += '/' + 'K'
+          when ','.bytes.to_a[0]
+            prepared_data += '/' + 'L'
+          when '/'.bytes.to_a[0]
+            prepared_data += '/' + 'O'
+          when ':'.bytes.to_a[0]
+            prepared_data += '/' + 'Z'
+          when ';'.bytes.to_a[0]
+            prepared_data += '%' + 'F'
+          when '<'.bytes.to_a[0]
+            prepared_data += '%' + 'G'
+          when '='.bytes.to_a[0]
+            prepared_data += '%' + 'H'
+          when '>'.bytes.to_a[0]
+            prepared_data += '%' + 'I'
+          when '?'.bytes.to_a[0]
+            prepared_data += '%' + 'J'
+          when '@'.bytes.to_a[0]
+            prepared_data += '%' + 'V'
+          when '['.bytes.to_a[0]
+            prepared_data += '%' + 'K'
+          when '\\'.bytes.to_a[0]
+            prepared_data += '%' + 'L'
+          when ']'.bytes.to_a[0]
+            prepared_data += '%' + 'M'
+          when '^'.bytes.to_a[0]
+            prepared_data += '%' + 'N'
+          when '_'.bytes.to_a[0]
+            prepared_data += '%' + '0'
+          when '`'.bytes.to_a[0]
+            prepared_data += '%' + 'W'
+          when 97..122
+            prepared_data += '+' + character.chr.upcase
+          when '{'.bytes.to_a[0]
+            prepared_data += '%' + 'P'
+          when '|'.bytes.to_a[0]
+            prepared_data += '%' + 'Q'
+          when '}'.bytes.to_a[0]
+            prepared_data += '%' + 'R'
+          when '~'.bytes.to_a[0]
+            prepared_data += '%' + 'S'
+          else
+            prepared_data += character.chr
           end
         end
         
-        case character
-        when 0
-          return super('%'.bytes.to_a[0]) + super('U'.bytes.to_a[0])
-        when 1..26
-          return super('$'.bytes.to_a[0]) + super((character.bytes.to_a[0] + 64))
-        when 27..31
-          return super('%'.bytes.to_a[0]) + super((character.bytes.to_a[0] + 38))
-        when 127
-          return super('%'.bytes.to_a[0]) + super('T'.bytes.to_a[0])
-        when '!'.bytes.to_a[0]
-          return super('/'.bytes.to_a[0]) + super('A'.bytes.to_a[0])
-        when '"'.bytes.to_a[0]
-          return super('/'.bytes.to_a[0]) + super('B'.bytes.to_a[0])
-        when '#'.bytes.to_a[0]
-          return super('/'.bytes.to_a[0]) + super('C'.bytes.to_a[0])
-        when '$'.bytes.to_a[0]
-          return super('/'.bytes.to_a[0]) + super('D'.bytes.to_a[0])
-        when '%'.bytes.to_a[0]
-          return super('/'.bytes.to_a[0]) + super('E'.bytes.to_a[0])
-        when '&'.bytes.to_a[0]
-          return super('/'.bytes.to_a[0]) + super('F'.bytes.to_a[0])
-        when '\''.bytes.to_a[0]
-          return super('/'.bytes.to_a[0]) + super('G'.bytes.to_a[0])
-        when '('.bytes.to_a[0]
-          return super('/'.bytes.to_a[0]) + super('H'.bytes.to_a[0])
-        when ')'.bytes.to_a[0]
-          return super('/'.bytes.to_a[0]) + super('I'.bytes.to_a[0])
-        when '*'.bytes.to_a[0]
-          return super('/'.bytes.to_a[0]) + super('J'.bytes.to_a[0])
-        when '+'.bytes.to_a[0]
-          return super('/'.bytes.to_a[0]) + super('K'.bytes.to_a[0])
-        when ','.bytes.to_a[0]
-          return super('/'.bytes.to_a[0]) + super('L'.bytes.to_a[0])
-        when '/'.bytes.to_a[0]
-          return super('/'.bytes.to_a[0]) + super('O'.bytes.to_a[0])
-        when ':'.bytes.to_a[0]
-          return super('/'.bytes.to_a[0]) + super('Z'.bytes.to_a[0])
-        when ';'.bytes.to_a[0]
-          return super('%'.bytes.to_a[0]) + super('F'.bytes.to_a[0])
-        when '<'.bytes.to_a[0]
-          return super('%'.bytes.to_a[0]) + super('G'.bytes.to_a[0])
-        when '='.bytes.to_a[0]
-          return super('%'.bytes.to_a[0]) + super('H'.bytes.to_a[0])
-        when '>'.bytes.to_a[0]
-          return super('%'.bytes.to_a[0]) + super('I'.bytes.to_a[0])
-        when '?'.bytes.to_a[0]
-          return super('%'.bytes.to_a[0]) + super('J'.bytes.to_a[0])
-        when '@'.bytes.to_a[0]
-          return super('%'.bytes.to_a[0]) + super('V'.bytes.to_a[0])
-        when '['.bytes.to_a[0]
-          return super('%'.bytes.to_a[0]) + super('K'.bytes.to_a[0])
-        when '\\'.bytes.to_a[0]
-          return super('%'.bytes.to_a[0]) + super('L'.bytes.to_a[0])
-        when ']'.bytes.to_a[0]
-          return super('%'.bytes.to_a[0]) + super('M'.bytes.to_a[0])
-        when '^'.bytes.to_a[0]
-          return super('%'.bytes.to_a[0]) + super('N'.bytes.to_a[0])
-        when '_'.bytes.to_a[0]
-          return super('%'.bytes.to_a[0]) + super('0'.bytes.to_a[0])
-        when '`'.bytes.to_a[0]
-          return super('%'.bytes.to_a[0]) + super('W'.bytes.to_a[0])
-        when 97..122
-          return super('+'.bytes.to_a[0]) + super(character.chr.upcase.bytes.to_a[0])
-        when '{'.bytes.to_a[0]
-          return super('%'.bytes.to_a[0]) + super('P'.bytes.to_a[0])
-        when '|'.bytes.to_a[0]
-          return super('%'.bytes.to_a[0]) + super('Q'.bytes.to_a[0])
-        when '}'.bytes.to_a[0]
-          return super('%'.bytes.to_a[0]) + super('R'.bytes.to_a[0])
-        when '~'.bytes.to_a[0]
-          return super('%'.bytes.to_a[0]) + super('S'.bytes.to_a[0])
-        else
-          return nil
-        end
+        return prepared_data
       end
     end
   end
