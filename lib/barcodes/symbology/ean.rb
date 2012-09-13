@@ -88,7 +88,7 @@ module Barcodes
             elsif char.chr == 'C'
               encoded_data += "01010"
             else
-              if index < 9
+              if index < 8
                 unless parity.nil?
                   encoded_data += self._encode_character_with_parity(char, parity[index - 2])
                 else
@@ -128,18 +128,6 @@ module Barcodes
           value = 10 - (sum % 10)
           
           return value.to_s
-        end
-      end
-      
-      # Validates barcode using provided data
-      def valid?
-        self.data.each_byte do |char|
-          if char.chr == 'S' || char.chr == 'C'
-            return false
-          end
-          unless self.class.charset.include? char
-            return false
-          end
         end
       end
       

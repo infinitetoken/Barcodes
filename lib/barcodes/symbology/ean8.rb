@@ -57,10 +57,6 @@ module Barcodes
       # is valid.
       # Data length must be exactly 7 digits
       def valid?
-        unless super
-          return false
-        end
-        
         return self.data.length == 7 ? true : false
       end
     end

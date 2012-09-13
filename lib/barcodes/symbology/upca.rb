@@ -32,10 +32,6 @@ module Barcodes
       # Validates barcode using provided data
       # Data length must be 11 digits
       def valid?
-        unless super
-          return false
-        end
-        
         return self.data.length == 11 ? true : false
       end
     end

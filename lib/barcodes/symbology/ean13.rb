@@ -33,10 +33,6 @@ module Barcodes
       # is valid.
       # Data length must be exactly 12 digits
       def valid?
-        unless super
-          return false
-        end
-        
         return self.data.length == 12 ? true : false
       end
     end

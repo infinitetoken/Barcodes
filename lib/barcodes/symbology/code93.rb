@@ -88,35 +88,35 @@ module Barcodes
           if char == 255 || char == 254 || char == 253 || char == 252
             case char
             when 252
-              sum += 43
+              sum += weight * 43
             when 253
-              sum += 44
+              sum += weight * 44
             when 254
-              sum += 45
+              sum += weight * 45
             when 255
-              sum += 46
+              sum += weight * 46
             end
           else
             if ('0'..'9').include? char.chr
               sum += weight * char.chr.to_i
             elsif ('A'..'Z').include? char.chr
-              sum += ('A'..'Z').to_a.index(char.chr) + 10
+              sum += weight * (('A'..'Z').to_a.index(char.chr) + 10)
             else
               case char.chr
               when '-'
-                sum += 36
+                sum += weight * 36
               when '.'
-                sum += 37
+                sum += weight * 837
               when ' '
-                sum += 38
+                sum += weight * 38
               when '$'
-                sum += 39
+                sum += weight * 39
               when '/'
-                sum += 40
+                sum += weight * 40
               when '+'
-                sum += 41
+                sum += weight * 41
               when '%'
-                sum += 42
+                sum += weight * 42
               end
             end
           end

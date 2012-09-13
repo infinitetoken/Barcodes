@@ -117,7 +117,7 @@ module Barcodes
       def encoded_data
         if self.valid?
           encoded_data = ""
-          charset = 'B'
+          charset = 'A'
           char_c = nil
           self.formatted_data.each_byte do |char|
             if char == "\xF4".bytes.to_a[0] || char == "\xF5".bytes.to_a[0] || char == "\xF6".bytes.to_a[0]
@@ -177,13 +177,12 @@ module Barcodes
       def checksum
         if valid?
           sum = 0
-          index = 0
-          charset = self.class.charset_b
+          index = 1
+          charset = self.class.charset_a
           char_c = nil
           self._prepared_data.each_byte do |char|
             if char == "\xF4".bytes.to_a[0] || char == "\xF5".bytes.to_a[0] || char == "\xF6".bytes.to_a[0]
               sum += self.class.charset_a.index(char) if self.class.charset_a.include?(char)
-              index += 1
               
               case char
               when "\xF4".bytes.to_a[0]
@@ -256,17 +255,17 @@ module Barcodes
       # Inspects barcode data and determines the best character sets to use
       # for provided data
       def _prepared_data
-        start = "\xF5"
-        charset = "B"
+        start = "\xF4"
+        charset = "A"
         data = ""
         cursor = 0
         
         if /^[\d]{4,}/ === @data
           start = "\xF6"
           charset = "C"
-        elsif self._encode_character_in_charset(@data.bytes.to_a[0], 'B').nil?
+        elsif self._encode_character_in_charset(@data.bytes.to_a[0], 'A').nil?
           start = "\xF4"
-          charset = "A"
+          charset = "B"
         end
         data += start
         
