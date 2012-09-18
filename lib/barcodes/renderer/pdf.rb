@@ -75,7 +75,6 @@ module Barcodes
             bar_width_pixels = (barcode.bar_width * 0.001) * 72.0
             caption_size_pixels = ((barcode.caption_size * 0.001) * 72.0)
             caption_height_pixels = ((barcode.caption_height * 0.001) * 72.0)
-            barcode_height_pixels = ((barcode.height * 0.001) * 72.0)
             
             pdf.bounding_box([pdf.bounds.left + quiet_zone_width_pixels, pdf.bounds.top], :width => barcode_box_width_pixels, :height => bar_height_pixels) do
               index = 0
@@ -133,7 +132,6 @@ module Barcodes
             bar_width_pixels = (barcode.bar_width * 0.001) * 72.0
             caption_size_pixels = ((barcode.caption_size * 0.001) * 72.0)
             caption_height_pixels = ((barcode.caption_height * 0.001) * 72.0)
-            barcode_height_pixels = ((barcode.height * 0.001) * 72.0) 
             encoded_data = barcode.encoded_data
             
             if barcode.data.length == 7 # EAN8
@@ -162,7 +160,11 @@ module Barcodes
                   bar_count += 1
                 else
                   if start_range.include?(index) || middle_range.include?(index) || end_range.include?(index)
-                    pdf.fill_rectangle origin, bar_width_pixels * bar_count, bar_height_pixels + (caption_height_pixels * 0.5)
+                    if barcode.captioned
+                      pdf.fill_rectangle origin, bar_width_pixels * bar_count, bar_height_pixels + (bar_width_pixels * 5)
+                    else
+                      pdf.fill_rectangle origin, bar_width_pixels * bar_count, bar_height_pixels
+                    end
                   else
                     pdf.fill_rectangle origin, bar_width_pixels * bar_count, bar_height_pixels
                   end
@@ -172,7 +174,11 @@ module Barcodes
               end
 
               if bar_count > 0
-                pdf.fill_rectangle origin, bar_width_pixels * bar_count, bar_height_pixels + (caption_height_pixels * 0.5)
+                if barcode.captioned
+                  pdf.fill_rectangle origin, bar_width_pixels * bar_count, bar_height_pixels + (bar_width_pixels * 5)
+                else
+                  pdf.fill_rectangle origin, bar_width_pixels * bar_count, bar_height_pixels
+                end
               end
             end
 
