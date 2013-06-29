@@ -4,6 +4,15 @@
 # Copyright:: Copyright (c) 2012 Infinite Token LLC
 # License::  MIT License
 
-require 'barcodes/renderer/ascii'
-require 'barcodes/renderer/pdf'
+require 'spec_helper'
 require 'barcodes/renderer/image'
+
+describe Barcodes::Renderer::Image do
+  describe "#new" do
+    
+  end
+  
+  describe "#render" do
+    
+  end
+end
