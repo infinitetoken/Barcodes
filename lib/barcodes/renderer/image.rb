@@ -18,6 +18,7 @@ module Barcodes
         
         ilist = Magick::ImageList.new
         ilist.from_blob(pdf.render)
+        ilist.format="PNG"
         
         unless filename.nil?
           ilist.each_with_index do |image, index|
