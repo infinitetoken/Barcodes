@@ -4,8 +4,8 @@
 # Copyright:: Copyright (c) 2012 Infinite Token LLC
 # License::  MIT License
 
-# 
+#
 module Barcodes
   # Returns the current version
-  VERSION = "0.0.11"
+  VERSION = "0.0.12"
 end

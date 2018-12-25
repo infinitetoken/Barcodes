@@ -8,18 +8,18 @@ require 'barcodes/symbology/base'
 
 module Barcodes
   module Symbology
-    
+
     # This is the base class for all EAN type (EAN8, EAN13, UPC-A) barcode symbologies.
     # EAN type barcodes can encode only the numbers 0-9
-    # 
+    #
     # More info: http://en.wikipedia.org/wiki/European_Article_Number
     class Ean < Base
-      
+
       # EAN character set
       def self.charset
         ['0','1','2','3','4','5','6','7','8','9','S','C'].collect {|c| c.bytes.to_a[0] }
       end
-      
+
       # EAN parity values table
       def self.parity
         [
@@ -28,7 +28,7 @@ module Barcodes
           "010110", "011010"
         ]
       end
-      
+
       # EAN left hand even values table
       def self.left_hand_even
         [
@@ -37,7 +37,7 @@ module Barcodes
           "0110111", "0001011"
         ]
       end
-      
+
       # EAN left hand odd values table
       def self.left_hand_odd
         [
@@ -46,7 +46,7 @@ module Barcodes
           "0001001", "0010111"
         ]
       end
-      
+
       # EAN right hand values table
       def self.right_hand
         [
@@ -55,26 +55,26 @@ module Barcodes
           "1001000", "1110100"
         ]
       end
-      
+
       # EAN uses special value sets so this returns an empty array
       def self.valueset
         []
       end
-      
+
       # Creates a new EAN instance
       def initialize(args={})
         super(args)
-        
+
         @start_character = 'S'
         @stop_character = 'S'
         @center_character = 'C'
       end
-      
+
       # Returns data + checksum
       def caption_data
         @data + self.checksum
       end
-      
+
       # Encodes data into 1's and 0's
       def encoded_data
         if self.valid?
@@ -103,12 +103,12 @@ module Barcodes
           encoded_data
         end
       end
-      
+
       # EAN uses quiet zone that is 9 times the bar width in mils
       def quiet_zone_width
         self.bar_width * 9
       end
-      
+
       # Calculates the checksum
       def checksum
         if self.valid?
@@ -124,15 +124,19 @@ module Barcodes
             end
             index += 1
           end
-          
+
           value = 10 - (sum % 10)
-          
+
+          if value == 10
+            value = 0
+          end
+
           return value.to_s
         end
       end
-      
+
       protected
-      
+
       # Encodes a single given character (as ASCII integer) using the given parity (1,0)
       def _encode_character_with_parity(character, parity)
         if self.class.charset.include? character
@@ -145,7 +149,7 @@ module Barcodes
           return nil
         end
       end
-      
+
       # Encodes a single given character (as ASCII integer) using right hand values table
       def _encode_character_with_right_hand(character)
         if self.class.charset.include? character
@@ -154,7 +158,7 @@ module Barcodes
           return nil
         end
       end
-      
+
       # Returns nil
       def _encode_character(character)
         nil
